@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 export function isAbsolute(path: string): boolean {
-  return path.startsWith('/');
+  return /^(?:\/|\w+:)/.test(path);
+}
+
+function rootname(path: string): string {
+  const m = /^\w+:(?:\/\/[^/]+)?\/?/.exec(path);
+  return m ? m[0]! : '/';
 }
 
 export function basename(path: string, ext = ''): string {
@@ -12,7 +17,7 @@ export function basename(path: string, ext = ''): string {
 
 export function dirname(path: string): string {
   const dirpath = path.replace(/\/?([^/]+)\/*$/, '');
-  return dirpath || (isAbsolute(path) ? '/' : '.');
+  return dirpath || (isAbsolute(path) ? rootname(path) : '.');
 }
 
 export function extname(path: string): string {
@@ -21,10 +26,14 @@ export function extname(path: string): string {
 }
 
 export function normalize(path: string): string {
-  const rootpath = isAbsolute(path) ? '/' : '';
-  let normpath = path.replace(/[\\/]+/g, '/');
+  const rootpath = isAbsolute(path) ? rootname(path) : '';
+  let normpath = path;
   if (rootpath) {
-    normpath = normpath.slice(rootpath.length).replace(/^(?:\/\.{1,2})+/, '');
+    normpath = normpath.slice(rootpath.length);
+  }
+  normpath = normpath.replace(/[\\/]+/g, '/');
+  if (rootpath) {
+    normpath = normpath.replace(/^(?:\/\.{0,2})+/, '');
   }
   const dirs = [] as string[];
   normpath.split('/').forEach((dir) => {

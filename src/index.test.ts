@@ -69,6 +69,18 @@ describe('isAbsolute', () => {
       expect(fuzzyPath.isAbsolute(arg)).toEqual(path.isAbsolute(arg));
     });
   });
+
+  ['C:/foo', 'z:/'].forEach((arg) => {
+    it(`expect an absolute path if it has a drive letter "${arg}"`, () => {
+      expect(fuzzyPath.isAbsolute(arg)).toEqual(true);
+    });
+  });
+
+  ['http://example.com'].forEach((arg) => {
+    it(`expect an absolute path if it has a protocol schema "${arg}"`, () => {
+      expect(fuzzyPath.isAbsolute(arg)).toEqual(true);
+    });
+  });
 });
 
 describe('join', () => {
@@ -87,6 +99,40 @@ describe('join', () => {
   ].forEach((args) => {
     it(`behaves the same as a native method if given "${args}"`, () => {
       expect(fuzzyPath.join(...args)).toEqual(path.join(...args));
+    });
+  });
+
+  ([
+    [['c:/foo', 'bar'], 'c:/foo/bar'],
+    [['c:/foo/', 'bar'], 'c:/foo/bar'],
+    [['c:/foo', '/bar'], 'c:/foo/bar'],
+    [['c:/foo/', '/bar'], 'c:/foo/bar'],
+    [['d:/foo', '../bar'], 'd:/bar'],
+    [['d:/foo', '../../bar'], 'd:/bar'],
+    [['d:/foo/', '../bar'], 'd:/bar'],
+    [['d:/foo/', '../../bar'], 'd:/bar'],
+  ] as [string[], string][]).forEach(([args, result]) => {
+    it(`joins "${args}" that has a drive letter`, () => {
+      expect(fuzzyPath.join(...args)).toEqual(result);
+    });
+  });
+
+  ([
+    [['http://example.com', 'file'], 'http://example.com/file'],
+    [['http://example.com/', 'file'], 'http://example.com/file'],
+    [['http://example.com', '/file'], 'http://example.com/file'],
+    [['http://example.com/', '/file'], 'http://example.com/file'],
+    [['http://example.com/dir', 'file'], 'http://example.com/dir/file'],
+    [['http://example.com/dir/', 'file'], 'http://example.com/dir/file'],
+    [['http://example.com/dir', '/file'], 'http://example.com/dir/file'],
+    [['http://example.com/dir/', '/file'], 'http://example.com/dir/file'],
+    [['http://example.com/dir', '../file'], 'http://example.com/file'],
+    [['http://example.com/dir', '../../file'], 'http://example.com/file'],
+    [['http://example.com/dir/', '../file'], 'http://example.com/file'],
+    [['http://example.com/dir/', '../../file'], 'http://example.com/file'],
+  ] as [string[], string][]).forEach(([args, result]) => {
+    it(`joins "${args}" that has a protocol schema`, () => {
+      expect(fuzzyPath.join(...args)).toEqual(result);
     });
   });
 });
@@ -108,6 +154,17 @@ describe('normalize', () => {
       expect(fuzzyPath.normalize(arg)).toEqual(path.normalize(arg));
     });
   });
+
+  ([
+    ['c:/dir//file', 'c:/dir/file'],
+    ['c:/../dir/../file', 'c:/file'],
+    ['http://example.com//dir//file', 'http://example.com/dir/file'],
+    ['http://example.com/../dir/../file', 'http://example.com/file'],
+  ] as [string, string][]).forEach(([arg, result]) => {
+    it(`returns normalized "${arg}"`, () => {
+      expect(fuzzyPath.normalize(arg)).toEqual(result);
+    });
+  });
 });
 
 describe('resolve', () => {
@@ -119,6 +176,17 @@ describe('resolve', () => {
   ].forEach((args) => {
     it(`behaves the same as a native method if given "${args}"`, () => {
       expect(fuzzyPath.resolve(...args)).toEqual(path.resolve(...args));
+    });
+  });
+
+  ([
+    [['c:/foo/bar', 'baz', 'qux'], 'c:/foo/bar/baz/qux'],
+    [['c:/foo/bar', '/baz', 'qux'], '/baz/qux'],
+    [['c:/foo/bar', 'd:/baz', 'qux'], 'd:/baz/qux'],
+    [['/foo/bar', 'http://example.com', 'file'], 'http://example.com/file'],
+  ] as [string[], string][]).forEach(([args, result]) => {
+    it(`resolves "${args}"`, () => {
+      expect(fuzzyPath.resolve(...args)).toEqual(result);
     });
   });
 });
