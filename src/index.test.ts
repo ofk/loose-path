@@ -1,5 +1,5 @@
 import path from 'path';
-import * as fuzzyPath from '.';
+import * as loosePath from '.';
 
 const FILE_TESTCASE = [
   '',
@@ -36,13 +36,13 @@ const DIRPATH_TESTCASE = [
 describe('basename', () => {
   [...FILE_TESTCASE, ...FILEPATH_TESTCASE, ...DIRPATH_TESTCASE].forEach((arg) => {
     it(`behaves the same as a native method if given "${arg}"`, () => {
-      expect(fuzzyPath.basename(arg)).toEqual(path.basename(arg));
+      expect(loosePath.basename(arg)).toEqual(path.basename(arg));
     });
   });
 
   FILE_TESTCASE.forEach((arg) => {
     it(`behaves the same as a native method if given "${arg}" and ".ext"`, () => {
-      expect(fuzzyPath.basename(arg, '.ext')).toEqual(path.basename(arg, '.ext'));
+      expect(loosePath.basename(arg, '.ext')).toEqual(path.basename(arg, '.ext'));
     });
   });
 });
@@ -50,7 +50,7 @@ describe('basename', () => {
 describe('dirname', () => {
   [...FILE_TESTCASE, ...FILEPATH_TESTCASE, ...DIRPATH_TESTCASE].forEach((arg) => {
     it(`behaves the same as a native method if given "${arg}"`, () => {
-      expect(fuzzyPath.dirname(arg)).toEqual(path.dirname(arg));
+      expect(loosePath.dirname(arg)).toEqual(path.dirname(arg));
     });
   });
 });
@@ -58,7 +58,7 @@ describe('dirname', () => {
 describe('extname', () => {
   [...FILE_TESTCASE, ...FILEPATH_TESTCASE, ...DIRPATH_TESTCASE].forEach((arg) => {
     it(`behaves the same as a native method if given "${arg}"`, () => {
-      expect(fuzzyPath.extname(arg)).toEqual(path.extname(arg));
+      expect(loosePath.extname(arg)).toEqual(path.extname(arg));
     });
   });
 });
@@ -66,19 +66,19 @@ describe('extname', () => {
 describe('isAbsolute', () => {
   ['/foo/bar', '/baz/..', 'qux/', '.'].forEach((arg) => {
     it(`behaves the same as a native method if given "${arg}"`, () => {
-      expect(fuzzyPath.isAbsolute(arg)).toEqual(path.isAbsolute(arg));
+      expect(loosePath.isAbsolute(arg)).toEqual(path.isAbsolute(arg));
     });
   });
 
   ['C:/foo', 'z:/'].forEach((arg) => {
     it(`expect an absolute path if it has a drive letter "${arg}"`, () => {
-      expect(fuzzyPath.isAbsolute(arg)).toEqual(true);
+      expect(loosePath.isAbsolute(arg)).toEqual(true);
     });
   });
 
   ['http://example.com'].forEach((arg) => {
     it(`expect an absolute path if it has a protocol schema "${arg}"`, () => {
-      expect(fuzzyPath.isAbsolute(arg)).toEqual(true);
+      expect(loosePath.isAbsolute(arg)).toEqual(true);
     });
   });
 });
@@ -98,7 +98,7 @@ describe('join', () => {
     ['foo', '..', 'bar', 'baz', '..', 'qux'],
   ].forEach((args) => {
     it(`behaves the same as a native method if given "${args}"`, () => {
-      expect(fuzzyPath.join(...args)).toEqual(path.join(...args));
+      expect(loosePath.join(...args)).toEqual(path.join(...args));
     });
   });
 
@@ -113,7 +113,7 @@ describe('join', () => {
     [['d:/foo/', '../../bar'], 'd:/bar'],
   ] as [string[], string][]).forEach(([args, result]) => {
     it(`joins "${args}" that has a drive letter`, () => {
-      expect(fuzzyPath.join(...args)).toEqual(result);
+      expect(loosePath.join(...args)).toEqual(result);
     });
   });
 
@@ -132,7 +132,7 @@ describe('join', () => {
     [['http://example.com/dir/', '../../file'], 'http://example.com/file'],
   ] as [string[], string][]).forEach(([args, result]) => {
     it(`joins "${args}" that has a protocol schema`, () => {
-      expect(fuzzyPath.join(...args)).toEqual(result);
+      expect(loosePath.join(...args)).toEqual(result);
     });
   });
 });
@@ -151,7 +151,7 @@ describe('normalize', () => {
     '.././foo/',
   ].forEach((arg) => {
     it(`behaves the same as a native method if given "${arg}"`, () => {
-      expect(fuzzyPath.normalize(arg)).toEqual(path.normalize(arg));
+      expect(loosePath.normalize(arg)).toEqual(path.normalize(arg));
     });
   });
 
@@ -162,7 +162,7 @@ describe('normalize', () => {
     ['http://example.com/../dir/../file', 'http://example.com/file'],
   ] as [string, string][]).forEach(([arg, result]) => {
     it(`returns normalized "${arg}"`, () => {
-      expect(fuzzyPath.normalize(arg)).toEqual(result);
+      expect(loosePath.normalize(arg)).toEqual(result);
     });
   });
 });
@@ -175,7 +175,7 @@ describe('resolve', () => {
     ['/foo/bar', '/baz', '../qux'],
   ].forEach((args) => {
     it(`behaves the same as a native method if given "${args}"`, () => {
-      expect(fuzzyPath.resolve(...args)).toEqual(path.resolve(...args));
+      expect(loosePath.resolve(...args)).toEqual(path.resolve(...args));
     });
   });
 
@@ -186,7 +186,7 @@ describe('resolve', () => {
     [['/foo/bar', 'http://example.com', 'file'], 'http://example.com/file'],
   ] as [string[], string][]).forEach(([args, result]) => {
     it(`resolves "${args}"`, () => {
-      expect(fuzzyPath.resolve(...args)).toEqual(result);
+      expect(loosePath.resolve(...args)).toEqual(result);
     });
   });
 });
