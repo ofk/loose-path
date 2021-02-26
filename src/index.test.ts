@@ -167,6 +167,45 @@ describe('normalize', () => {
   });
 });
 
+describe('relative', () => {
+  ([
+    ['', ''],
+    ['', 'file'],
+    ['dir', 'file'],
+    ['/', '/file'],
+    ['/file', '/file'],
+    ['/dir', '/file'],
+    ['/dir', '/dir/file'],
+    ['/dir/', '/dir/file'],
+    ['/dir', '/dir/file/'],
+    ['/dir/', '/dir/file/'],
+    ['/dir/file', '/dir'],
+    ['/dir/file/', '/dir'],
+    ['/dir/file', '/dir/'],
+    ['/dir/file/', '/dir/'],
+    ['/dir/hoge/foo/bar/file', '/dir/hoge/baz/qux/file'],
+    ['./', './file'],
+    ['./dir', './file'],
+  ] as [string, string][]).forEach((args) => {
+    it(`behaves the same as a native method if given "${args}"`, () => {
+      // console.log(args, loosePath.relative(...args));
+      expect(loosePath.relative(...args)).toEqual(path.relative(...args));
+    });
+  });
+
+  ([
+    [['c:/dir', 'c:/dir/file'], 'file'],
+    [['http://example.com/dir', 'http://example.com/dir/file'], 'file'],
+    [['c:/dir', 'd:/dir/file'], 'd:/dir/file'],
+    [['c:/dir', 'http://example.org/dir/file'], 'http://example.org/dir/file'],
+    [['http://example.com/dir', 'http://example.org/dir/file'], 'http://example.org/dir/file'],
+  ] as [[string, string], string][]).forEach(([args, result]) => {
+    it(`returns relative path of "${args}"`, () => {
+      expect(loosePath.relative(...args)).toEqual(result);
+    });
+  });
+});
+
 describe('resolve', () => {
   [
     ['/foo/bar', 'baz', 'qux'],
