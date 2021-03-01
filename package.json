@@ -3,7 +3,7 @@
   "description": "",
   "license": "MIT",
   "author": "ofk <ofkjpn+npm@gmail.com> (https://github.com/ofk/)",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "files": [
     "dist",

@@ -1,39 +1,41 @@
 "use strict";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolve = exports.join = exports.normalize = exports.extname = exports.dirname = exports.basename = exports.isAbsolute = void 0;
+exports.relative = exports.resolve = exports.join = exports.normalize = exports.extname = exports.dirname = exports.basename = exports.isAbsolute = void 0;
 function isAbsolute(path) {
     return /^(?:\/|\w+:)/.test(path);
 }
 exports.isAbsolute = isAbsolute;
 function rootname(path) {
     var m = /^\w+:(?:\/\/[^/]+)?\/?/.exec(path);
-    return m ? m[0] : '/';
+    if (m) {
+        return m[0];
+    }
+    return path.startsWith('/') ? '/' : '';
 }
 function basename(path, ext) {
     if (ext === void 0) { ext = ''; }
-    var m = /([^/]*)\/*$/.exec(path);
+    var rootpath = rootname(path);
+    var m = /([^/]*)\/*$/.exec(path.slice(rootpath.length));
     var name = m ? m[1] : '';
     return ext && name.endsWith(ext) ? name.slice(0, -ext.length) : name;
 }
 exports.basename = basename;
 function dirname(path) {
-    var dirpath = path.replace(/\/?([^/]+)\/*$/, '');
-    return dirpath || (isAbsolute(path) ? rootname(path) : '.');
+    var rootpath = rootname(path);
+    var dirpath = path.slice(rootpath.length).replace(/\/?([^/]+)\/*$/, '');
+    return "" + rootpath + dirpath || '.';
 }
 exports.dirname = dirname;
 function extname(path) {
-    var m = /[^/.](\.\w*)$/.exec(path);
+    var rootpath = rootname(path);
+    var m = /[^/.](\.\w*)$/.exec(path.slice(rootpath.length));
     return m ? m[1] : '';
 }
 exports.extname = extname;
 function normalize(path) {
-    var rootpath = isAbsolute(path) ? rootname(path) : '';
-    var normpath = path;
-    if (rootpath) {
-        normpath = normpath.slice(rootpath.length);
-    }
-    normpath = normpath.replace(/[\\/]+/g, '/');
+    var rootpath = rootname(path);
+    var normpath = path.slice(rootpath.length).replace(/[\\/]+/g, '/');
     if (rootpath) {
         normpath = normpath.replace(/^(?:\/\.{0,2})+/, '');
     }
@@ -81,3 +83,30 @@ function resolve() {
     return join.apply(void 0, paths.slice(index));
 }
 exports.resolve = resolve;
+function relative(from, to) {
+    var fromRoot = rootname(from);
+    var toRoot = rootname(to);
+    if (fromRoot !== toRoot) {
+        return to;
+    }
+    var fromResolvePath = resolve('/', from);
+    var toResolvePath = resolve('/', to);
+    if (fromResolvePath === toResolvePath) {
+        return '';
+    }
+    var fromPath = fromResolvePath.slice(fromRoot.length);
+    var toPath = toResolvePath.slice(toRoot.length);
+    var fromParts = fromPath.split('/').filter(function (part) { return part; });
+    var toParts = toPath.split('/').filter(function (part) { return part; });
+    var commonSize = 0;
+    for (var minSize = Math.min(fromParts.length, toParts.length); commonSize < minSize && fromParts[commonSize] === toParts[commonSize]; commonSize += 1)
+        ;
+    var restSize = fromParts.length - commonSize;
+    var parentParts = [];
+    for (var i = 0; i < restSize; i += 1) {
+        parentParts.push('..');
+    }
+    var parts = parentParts.concat(toParts.slice(commonSize));
+    return parts.join('/');
+}
+exports.relative = relative;
