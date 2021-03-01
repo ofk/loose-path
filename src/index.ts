@@ -66,3 +66,35 @@ export function resolve(...paths: string[]): string {
   for (; !isAbsolute(paths[index]!) && index > 0; index -= 1);
   return join(...paths.slice(index));
 }
+
+export function relative(from: string, to: string): string {
+  const fromRoot = rootname(from);
+  const toRoot = rootname(to);
+  if (fromRoot !== toRoot) {
+    return to;
+  }
+
+  const fromResolvePath = resolve('/', from);
+  const toResolvePath = resolve('/', to);
+  if (fromResolvePath === toResolvePath) {
+    return '';
+  }
+
+  const fromPath = fromResolvePath.slice(fromRoot.length);
+  const toPath = toResolvePath.slice(toRoot.length);
+  const fromParts = fromPath.split('/').filter((part) => part);
+  const toParts = toPath.split('/').filter((part) => part);
+  let commonSize = 0;
+  for (
+    const minSize = Math.min(fromParts.length, toParts.length);
+    commonSize < minSize && fromParts[commonSize] === toParts[commonSize];
+    commonSize += 1
+  );
+  const restSize = fromParts.length - commonSize;
+  const parentParts = [];
+  for (let i = 0; i < restSize; i += 1) {
+    parentParts.push('..');
+  }
+  const parts = parentParts.concat(toParts.slice(commonSize));
+  return parts.join('/');
+}
