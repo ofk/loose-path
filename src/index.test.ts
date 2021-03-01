@@ -33,6 +33,8 @@ const DIRPATH_TESTCASE = [
   'C:/foo/bar/baz/',
 ];
 
+const ROOTPATH_TESTCASE = ['/', 'C:/', 'http://example.com', 'http://example.com/'];
+
 describe('basename', () => {
   [...FILE_TESTCASE, ...FILEPATH_TESTCASE, ...DIRPATH_TESTCASE].forEach((arg) => {
     it(`behaves the same as a native method if given "${arg}"`, () => {
@@ -45,6 +47,12 @@ describe('basename', () => {
       expect(loosePath.basename(arg, '.ext')).toEqual(path.basename(arg, '.ext'));
     });
   });
+
+  ROOTPATH_TESTCASE.forEach((arg) => {
+    it(`returns an empty basename if given "${arg}"`, () => {
+      expect(loosePath.basename(arg)).toEqual('');
+    });
+  });
 });
 
 describe('dirname', () => {
@@ -53,12 +61,24 @@ describe('dirname', () => {
       expect(loosePath.dirname(arg)).toEqual(path.dirname(arg));
     });
   });
+
+  ROOTPATH_TESTCASE.forEach((arg) => {
+    it(`returns a root path if given "${arg}"`, () => {
+      expect(loosePath.dirname(arg)).toEqual(arg);
+    });
+  });
 });
 
 describe('extname', () => {
   [...FILE_TESTCASE, ...FILEPATH_TESTCASE, ...DIRPATH_TESTCASE].forEach((arg) => {
     it(`behaves the same as a native method if given "${arg}"`, () => {
       expect(loosePath.extname(arg)).toEqual(path.extname(arg));
+    });
+  });
+
+  ROOTPATH_TESTCASE.forEach((arg) => {
+    it(`returns an empty extname if given "${arg}"`, () => {
+      expect(loosePath.extname(arg)).toEqual('');
     });
   });
 });

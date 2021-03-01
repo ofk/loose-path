@@ -13,18 +13,21 @@ function rootname(path: string): string {
 }
 
 export function basename(path: string, ext = ''): string {
-  const m = /([^/]*)\/*$/.exec(path);
+  const rootpath = rootname(path);
+  const m = /([^/]*)\/*$/.exec(path.slice(rootpath.length));
   const name = m ? m[1]! : '';
   return ext && name.endsWith(ext) ? name.slice(0, -ext.length) : name;
 }
 
 export function dirname(path: string): string {
-  const dirpath = path.replace(/\/?([^/]+)\/*$/, '');
-  return dirpath || rootname(path) || '.';
+  const rootpath = rootname(path);
+  const dirpath = path.slice(rootpath.length).replace(/\/?([^/]+)\/*$/, '');
+  return `${rootpath}${dirpath}` || '.';
 }
 
 export function extname(path: string): string {
-  const m = /[^/.](\.\w*)$/.exec(path);
+  const rootpath = rootname(path);
+  const m = /[^/.](\.\w*)$/.exec(path.slice(rootpath.length));
   return m ? m[1]! : '';
 }
 
