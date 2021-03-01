@@ -6,32 +6,34 @@ export function isAbsolute(path: string): boolean {
 
 function rootname(path: string): string {
   const m = /^\w+:(?:\/\/[^/]+)?\/?/.exec(path);
-  return m ? m[0]! : '/';
+  if (m) {
+    return m[0]!;
+  }
+  return path.startsWith('/') ? '/' : '';
 }
 
 export function basename(path: string, ext = ''): string {
-  const m = /([^/]*)\/*$/.exec(path);
+  const rootpath = rootname(path);
+  const m = /([^/]*)\/*$/.exec(path.slice(rootpath.length));
   const name = m ? m[1]! : '';
   return ext && name.endsWith(ext) ? name.slice(0, -ext.length) : name;
 }
 
 export function dirname(path: string): string {
-  const dirpath = path.replace(/\/?([^/]+)\/*$/, '');
-  return dirpath || (isAbsolute(path) ? rootname(path) : '.');
+  const rootpath = rootname(path);
+  const dirpath = path.slice(rootpath.length).replace(/\/?([^/]+)\/*$/, '');
+  return `${rootpath}${dirpath}` || '.';
 }
 
 export function extname(path: string): string {
-  const m = /[^/.](\.\w*)$/.exec(path);
+  const rootpath = rootname(path);
+  const m = /[^/.](\.\w*)$/.exec(path.slice(rootpath.length));
   return m ? m[1]! : '';
 }
 
 export function normalize(path: string): string {
-  const rootpath = isAbsolute(path) ? rootname(path) : '';
-  let normpath = path;
-  if (rootpath) {
-    normpath = normpath.slice(rootpath.length);
-  }
-  normpath = normpath.replace(/[\\/]+/g, '/');
+  const rootpath = rootname(path);
+  let normpath = path.slice(rootpath.length).replace(/[\\/]+/g, '/');
   if (rootpath) {
     normpath = normpath.replace(/^(?:\/\.{0,2})+/, '');
   }
