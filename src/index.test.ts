@@ -178,6 +178,7 @@ describe('normalize', () => {
   ([
     ['c:/dir//file', 'c:/dir/file'],
     ['c:/../dir/../file', 'c:/file'],
+    ['C:\\foo\\bar\\baz\\file.ext', 'C:/foo/bar/baz/file.ext'],
     ['http://example.com//dir//file', 'http://example.com/dir/file'],
     ['http://example.com/../dir/../file', 'http://example.com/file'],
   ] as [string, string][]).forEach(([arg, result]) => {
@@ -239,10 +240,18 @@ describe('resolve', () => {
   });
 
   ([
-    [['c:/foo/bar', 'baz', 'qux'], 'c:/foo/bar/baz/qux'],
+    [['c:/foo/bar', 'baz/qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
     [['c:/foo/bar', '/baz', 'qux'], '/baz/qux'],
     [['c:/foo/bar', 'd:/baz', 'qux'], 'd:/baz/qux'],
+    [['c:/foo/bar', 'c:/foo/hoge/piyo'], 'c:/foo/hoge/piyo'],
+    [['c:\\foo\\bar', 'baz\\qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
+    [['c:\\foo\\bar', 'd:\\baz', 'qux'], 'd:/baz/qux'],
+    [['c:\\foo\\bar', 'c:\\foo\\hoge\\piyo'], 'c:/foo/hoge/piyo'],
     [['/foo/bar', 'http://example.com', 'file'], 'http://example.com/file'],
+    [
+      ['http://example.com/foo/bar', 'http://example.com/foo/hoge/piyo'],
+      'http://example.com/foo/hoge/piyo',
+    ],
   ] as [string[], string][]).forEach(([args, result]) => {
     it(`resolves "${args}"`, () => {
       expect(loosePath.resolve(...args)).toEqual(result);
