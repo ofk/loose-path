@@ -5,9 +5,9 @@ export function isAbsolute(path: string): boolean {
 }
 
 function rootname(path: string): string {
-  const m = /^\w+:(?:\/\/[^/]+)?\/?/.exec(path);
+  const m = /^(\w+:)(\/\/[^/]+\/?|[\\/])/.exec(path);
   if (m) {
-    return m[0]!;
+    return m[2] === '\\' ? `${m[1]}/` : m[0]!;
   }
   return path.startsWith('/') ? '/' : '';
 }
