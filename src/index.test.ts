@@ -241,13 +241,14 @@ describe('resolve', () => {
 
   ([
     [['c:/foo/bar', 'baz/qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
-    [['c:/foo/bar', '/baz', 'qux'], '/baz/qux'],
+    [['c:/foo/bar', '/baz', 'qux'], 'c:/baz/qux'],
     [['c:/foo/bar', 'd:/baz', 'qux'], 'd:/baz/qux'],
     [['c:/foo/bar', 'c:/foo/hoge/piyo'], 'c:/foo/hoge/piyo'],
     [['c:\\foo\\bar', 'baz\\qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
     [['c:\\foo\\bar', 'd:\\baz', 'qux'], 'd:/baz/qux'],
     [['c:\\foo\\bar', 'c:\\foo\\hoge\\piyo'], 'c:/foo/hoge/piyo'],
-    [['/foo/bar', 'http://example.com', 'file'], 'http://example.com/file'],
+    [['/foo/bar', 'http://example.com/dir', 'file'], 'http://example.com/dir/file'],
+    [['/foo/bar', 'http://example.com/dir', '/file'], 'http://example.com/file'],
     [
       ['http://example.com/foo/bar', 'http://example.com/foo/hoge/piyo'],
       'http://example.com/foo/hoge/piyo',
