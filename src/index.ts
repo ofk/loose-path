@@ -65,7 +65,20 @@ export function join(...paths: string[]): string {
 
 export function resolve(...paths: string[]): string {
   let index = paths.length - 1;
-  for (; !isAbsolute(paths[index]!) && index > 0; index -= 1);
+  for (; index >= 0 && !isAbsolute(paths[index]!); index -= 1);
+  const rootpath = rootname(paths[index]!);
+  if (rootpath === '/') {
+    let rIndex = index - 1;
+    for (; rIndex >= 0; rIndex -= 1) {
+      const rPath = paths[rIndex]!;
+      if (isAbsolute(rPath)) {
+        const rRootpath = rootname(rPath);
+        if (rRootpath !== '/') {
+          return join(`${rRootpath.replace(/\/$/, '')}${paths[index]}`, ...paths.slice(index + 1));
+        }
+      }
+    }
+  }
   return join(...paths.slice(index));
 }
 
