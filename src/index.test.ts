@@ -240,6 +240,8 @@ describe('resolve', () => {
   });
 
   ([
+    [['foo', 'bar'], 'foo/bar'],
+    [['../foo', '../bar'], '../bar'],
     [['c:/foo/bar', 'baz/qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
     [['c:/foo/bar', '/baz', 'qux'], 'c:/baz/qux'],
     [['c:/foo/bar', 'd:/baz', 'qux'], 'd:/baz/qux'],
