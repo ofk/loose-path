@@ -1,5 +1,12 @@
 "use strict";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.relative = exports.resolve = exports.join = exports.normalize = exports.extname = exports.dirname = exports.basename = exports.isAbsolute = void 0;
 function isAbsolute(path) {
@@ -78,8 +85,21 @@ function resolve() {
         paths[_i] = arguments[_i];
     }
     var index = paths.length - 1;
-    for (; !isAbsolute(paths[index]) && index > 0; index -= 1)
+    for (; index >= 0 && !isAbsolute(paths[index]); index -= 1)
         ;
+    var rootpath = rootname(paths[index]);
+    if (rootpath === '/') {
+        var rIndex = index - 1;
+        for (; rIndex >= 0; rIndex -= 1) {
+            var rPath = paths[rIndex];
+            if (isAbsolute(rPath)) {
+                var rRootpath = rootname(rPath);
+                if (rRootpath !== '/') {
+                    return join.apply(void 0, __spreadArrays(["" + rRootpath.replace(/\/$/, '') + paths[index]], paths.slice(index + 1)));
+                }
+            }
+        }
+    }
     return join.apply(void 0, paths.slice(index));
 }
 exports.resolve = resolve;
