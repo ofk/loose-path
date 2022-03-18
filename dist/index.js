@@ -85,7 +85,7 @@ function resolve() {
         paths[_i] = arguments[_i];
     }
     var index = paths.length - 1;
-    for (; index >= 0 && !isAbsolute(paths[index]); index -= 1)
+    for (; !isAbsolute(paths[index]) && index > 0; index -= 1)
         ;
     var rootpath = rootname(paths[index]);
     if (rootpath === '/') {
