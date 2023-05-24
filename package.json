@@ -20,15 +20,17 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.build.json",
-    "format": "npm-run-all -p format:** -s prettier:format",
-    "format:package-json": "prettier-package-json --write",
-    "format:scripts": "npm run lint:scripts -- --fix",
-    "lint": "run-p lint:** prettier:lint",
+    "lint": "run-p lint:* prettier:lint",
+    "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:package-json": "prettier-package-json -l",
-    "lint:scripts": "eslint --ext .js,.jsx,.ts,.tsx src",
-    "lint:typecheck": "tsc --noEmit",
-    "prettier:format": "npm run prettier:lint -- --write",
+    "lint:tsc": "tsc",
+    "lint-fix": "npm-run-all -p lint-fix:* -s prettier:lint-fix",
+    "lint-fix:eslint": "npm run lint:eslint -- --fix",
+    "lint-fix:package-json": "prettier-package-json --write",
+    "prepare": "husky install",
     "prettier:lint": "prettier . --check",
+    "prettier:lint-fix": "npm run prettier:lint -- --write",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
   "types": "dist/index.d.ts",
@@ -48,11 +50,6 @@
     "typescript": "^5.0.4"
   },
   "keywords": [],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "package.json": "prettier-package-json --write",
     "*.{md,json,html}": "prettier --write",
