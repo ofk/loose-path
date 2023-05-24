@@ -1,4 +1,5 @@
 import path from 'path';
+
 import * as loosePath from '.';
 
 const FILE_TESTCASE = [
@@ -122,35 +123,39 @@ describe('join', () => {
     });
   });
 
-  ([
-    [['c:/foo', 'bar'], 'c:/foo/bar'],
-    [['c:/foo/', 'bar'], 'c:/foo/bar'],
-    [['c:/foo', '/bar'], 'c:/foo/bar'],
-    [['c:/foo/', '/bar'], 'c:/foo/bar'],
-    [['d:/foo', '../bar'], 'd:/bar'],
-    [['d:/foo', '../../bar'], 'd:/bar'],
-    [['d:/foo/', '../bar'], 'd:/bar'],
-    [['d:/foo/', '../../bar'], 'd:/bar'],
-  ] as [string[], string][]).forEach(([args, result]) => {
+  (
+    [
+      [['c:/foo', 'bar'], 'c:/foo/bar'],
+      [['c:/foo/', 'bar'], 'c:/foo/bar'],
+      [['c:/foo', '/bar'], 'c:/foo/bar'],
+      [['c:/foo/', '/bar'], 'c:/foo/bar'],
+      [['d:/foo', '../bar'], 'd:/bar'],
+      [['d:/foo', '../../bar'], 'd:/bar'],
+      [['d:/foo/', '../bar'], 'd:/bar'],
+      [['d:/foo/', '../../bar'], 'd:/bar'],
+    ] as [string[], string][]
+  ).forEach(([args, result]) => {
     it(`joins "${args}" that has a drive letter`, () => {
       expect(loosePath.join(...args)).toEqual(result);
     });
   });
 
-  ([
-    [['http://example.com', 'file'], 'http://example.com/file'],
-    [['http://example.com/', 'file'], 'http://example.com/file'],
-    [['http://example.com', '/file'], 'http://example.com/file'],
-    [['http://example.com/', '/file'], 'http://example.com/file'],
-    [['http://example.com/dir', 'file'], 'http://example.com/dir/file'],
-    [['http://example.com/dir/', 'file'], 'http://example.com/dir/file'],
-    [['http://example.com/dir', '/file'], 'http://example.com/dir/file'],
-    [['http://example.com/dir/', '/file'], 'http://example.com/dir/file'],
-    [['http://example.com/dir', '../file'], 'http://example.com/file'],
-    [['http://example.com/dir', '../../file'], 'http://example.com/file'],
-    [['http://example.com/dir/', '../file'], 'http://example.com/file'],
-    [['http://example.com/dir/', '../../file'], 'http://example.com/file'],
-  ] as [string[], string][]).forEach(([args, result]) => {
+  (
+    [
+      [['http://example.com', 'file'], 'http://example.com/file'],
+      [['http://example.com/', 'file'], 'http://example.com/file'],
+      [['http://example.com', '/file'], 'http://example.com/file'],
+      [['http://example.com/', '/file'], 'http://example.com/file'],
+      [['http://example.com/dir', 'file'], 'http://example.com/dir/file'],
+      [['http://example.com/dir/', 'file'], 'http://example.com/dir/file'],
+      [['http://example.com/dir', '/file'], 'http://example.com/dir/file'],
+      [['http://example.com/dir/', '/file'], 'http://example.com/dir/file'],
+      [['http://example.com/dir', '../file'], 'http://example.com/file'],
+      [['http://example.com/dir', '../../file'], 'http://example.com/file'],
+      [['http://example.com/dir/', '../file'], 'http://example.com/file'],
+      [['http://example.com/dir/', '../../file'], 'http://example.com/file'],
+    ] as [string[], string][]
+  ).forEach(([args, result]) => {
     it(`joins "${args}" that has a protocol schema`, () => {
       expect(loosePath.join(...args)).toEqual(result);
     });
@@ -175,13 +180,15 @@ describe('normalize', () => {
     });
   });
 
-  ([
-    ['c:/dir//file', 'c:/dir/file'],
-    ['c:/../dir/../file', 'c:/file'],
-    ['C:\\foo\\bar\\baz\\file.ext', 'C:/foo/bar/baz/file.ext'],
-    ['http://example.com//dir//file', 'http://example.com/dir/file'],
-    ['http://example.com/../dir/../file', 'http://example.com/file'],
-  ] as [string, string][]).forEach(([arg, result]) => {
+  (
+    [
+      ['c:/dir//file', 'c:/dir/file'],
+      ['c:/../dir/../file', 'c:/file'],
+      ['C:\\foo\\bar\\baz\\file.ext', 'C:/foo/bar/baz/file.ext'],
+      ['http://example.com//dir//file', 'http://example.com/dir/file'],
+      ['http://example.com/../dir/../file', 'http://example.com/file'],
+    ] as [string, string][]
+  ).forEach(([arg, result]) => {
     it(`returns normalized "${arg}"`, () => {
       expect(loosePath.normalize(arg)).toEqual(result);
     });
@@ -189,38 +196,42 @@ describe('normalize', () => {
 });
 
 describe('relative', () => {
-  ([
-    ['', ''],
-    ['', 'file'],
-    ['dir', 'file'],
-    ['/', '/file'],
-    ['/file', '/file'],
-    ['/dir', '/file'],
-    ['/dir', '/dir/file'],
-    ['/dir/', '/dir/file'],
-    ['/dir', '/dir/file/'],
-    ['/dir/', '/dir/file/'],
-    ['/dir/file', '/dir'],
-    ['/dir/file/', '/dir'],
-    ['/dir/file', '/dir/'],
-    ['/dir/file/', '/dir/'],
-    ['/dir/hoge/foo/bar/file', '/dir/hoge/baz/qux/file'],
-    ['./', './file'],
-    ['./dir', './file'],
-  ] as [string, string][]).forEach((args) => {
+  (
+    [
+      ['', ''],
+      ['', 'file'],
+      ['dir', 'file'],
+      ['/', '/file'],
+      ['/file', '/file'],
+      ['/dir', '/file'],
+      ['/dir', '/dir/file'],
+      ['/dir/', '/dir/file'],
+      ['/dir', '/dir/file/'],
+      ['/dir/', '/dir/file/'],
+      ['/dir/file', '/dir'],
+      ['/dir/file/', '/dir'],
+      ['/dir/file', '/dir/'],
+      ['/dir/file/', '/dir/'],
+      ['/dir/hoge/foo/bar/file', '/dir/hoge/baz/qux/file'],
+      ['./', './file'],
+      ['./dir', './file'],
+    ] as [string, string][]
+  ).forEach((args) => {
     it(`behaves the same as a native method if given "${args}"`, () => {
       // console.log(args, loosePath.relative(...args));
       expect(loosePath.relative(...args)).toEqual(path.relative(...args));
     });
   });
 
-  ([
-    [['c:/dir', 'c:/dir/file'], 'file'],
-    [['http://example.com/dir', 'http://example.com/dir/file'], 'file'],
-    [['c:/dir', 'd:/dir/file'], 'd:/dir/file'],
-    [['c:/dir', 'http://example.org/dir/file'], 'http://example.org/dir/file'],
-    [['http://example.com/dir', 'http://example.org/dir/file'], 'http://example.org/dir/file'],
-  ] as [[string, string], string][]).forEach(([args, result]) => {
+  (
+    [
+      [['c:/dir', 'c:/dir/file'], 'file'],
+      [['http://example.com/dir', 'http://example.com/dir/file'], 'file'],
+      [['c:/dir', 'd:/dir/file'], 'd:/dir/file'],
+      [['c:/dir', 'http://example.org/dir/file'], 'http://example.org/dir/file'],
+      [['http://example.com/dir', 'http://example.org/dir/file'], 'http://example.org/dir/file'],
+    ] as [[string, string], string][]
+  ).forEach(([args, result]) => {
     it(`returns relative path of "${args}"`, () => {
       expect(loosePath.relative(...args)).toEqual(result);
     });
@@ -239,23 +250,25 @@ describe('resolve', () => {
     });
   });
 
-  ([
-    [['foo', 'bar'], 'foo/bar'],
-    [['../foo', '../bar'], '../bar'],
-    [['c:/foo/bar', 'baz/qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
-    [['c:/foo/bar', '/baz', 'qux'], 'c:/baz/qux'],
-    [['c:/foo/bar', 'd:/baz', 'qux'], 'd:/baz/qux'],
-    [['c:/foo/bar', 'c:/foo/hoge/piyo'], 'c:/foo/hoge/piyo'],
-    [['c:\\foo\\bar', 'baz\\qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
-    [['c:\\foo\\bar', 'd:\\baz', 'qux'], 'd:/baz/qux'],
-    [['c:\\foo\\bar', 'c:\\foo\\hoge\\piyo'], 'c:/foo/hoge/piyo'],
-    [['/foo/bar', 'http://example.com/dir', 'file'], 'http://example.com/dir/file'],
-    [['/foo/bar', 'http://example.com/dir', '/file'], 'http://example.com/file'],
+  (
     [
-      ['http://example.com/foo/bar', 'http://example.com/foo/hoge/piyo'],
-      'http://example.com/foo/hoge/piyo',
-    ],
-  ] as [string[], string][]).forEach(([args, result]) => {
+      [['foo', 'bar'], 'foo/bar'],
+      [['../foo', '../bar'], '../bar'],
+      [['c:/foo/bar', 'baz/qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
+      [['c:/foo/bar', '/baz', 'qux'], 'c:/baz/qux'],
+      [['c:/foo/bar', 'd:/baz', 'qux'], 'd:/baz/qux'],
+      [['c:/foo/bar', 'c:/foo/hoge/piyo'], 'c:/foo/hoge/piyo'],
+      [['c:\\foo\\bar', 'baz\\qux', 'quux'], 'c:/foo/bar/baz/qux/quux'],
+      [['c:\\foo\\bar', 'd:\\baz', 'qux'], 'd:/baz/qux'],
+      [['c:\\foo\\bar', 'c:\\foo\\hoge\\piyo'], 'c:/foo/hoge/piyo'],
+      [['/foo/bar', 'http://example.com/dir', 'file'], 'http://example.com/dir/file'],
+      [['/foo/bar', 'http://example.com/dir', '/file'], 'http://example.com/file'],
+      [
+        ['http://example.com/foo/bar', 'http://example.com/foo/hoge/piyo'],
+        'http://example.com/foo/hoge/piyo',
+      ],
+    ] as [string[], string][]
+  ).forEach(([args, result]) => {
     it(`resolves "${args}"`, () => {
       expect(loosePath.resolve(...args)).toEqual(result);
     });
